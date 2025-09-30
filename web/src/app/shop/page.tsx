@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import { useProductsQuery } from "@/hooks/useProductsQuery";
 import { MinProduct } from "@/types/product";
+import SiteFooter from "@/components/SiteFooter";
 
 // Định nghĩa các giới hạn có thể chọn
 const LIMIT_OPTIONS = [8, 12, 16];
@@ -218,7 +219,14 @@ export default function ShopPage() {
             {data && data.data.length > 0 && (
                 <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {data.data.map((p) => (
-                        <ProductCard key={p.slug} product={p as unknown as MinProduct} />
+                        <ProductCard
+                            key={p.slug}
+                            product={{
+                                ...p,
+                                _id: (p as any)._id ?? "",
+                                images: (p as any).images ?? [],
+                            }}
+                        />
                     ))}
                 </div>
             )}
@@ -253,6 +261,7 @@ export default function ShopPage() {
                     </div>
                 </div>
             )}
+            <SiteFooter />
         </main>
     );
 }

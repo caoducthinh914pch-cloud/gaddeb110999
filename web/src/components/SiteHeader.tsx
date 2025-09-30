@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation"; 
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import CartIndicator from "@/components/CartIndicator";
+import CartDropdown from "@/features/cart/CartDropdown"; 
 
 export default function SiteHeader() {
   // **Khởi tạo useRouter**
@@ -42,9 +44,16 @@ export default function SiteHeader() {
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b">
       <div className="container mx-auto max-w-6xl px-4 h-14 flex items-center gap-3">
         <Link href="/" className="font-bold">Shoply</Link>
-        <nav className="flex gap-2 ml-auto">
+        <nav className="flex gap-2 ml-auto md:gap-4 items-center">
           <Nav href="/shop">Shop</Nav>
-          <Nav href="/cart">Cart</Nav>
+          <div className="relative group">
+        
+        {/* Nút kích hoạt/Link chính - CartIndicator */}
+        <Link href="/cart" className="px-3 py-2 rounded-lg hover:underline flex items-center h-full">
+            <CartIndicator /> 
+        </Link>
+        <CartDropdown /> 
+            </div>
           <Nav href="/admin">Admin</Nav>
           <Nav href="/login">Login</Nav>
           <Nav href="/register">Register</Nav>

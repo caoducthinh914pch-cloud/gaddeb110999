@@ -1,22 +1,21 @@
-// src/components/ProductCard.tsx
-
 import Image from "next/image";
 import Link from "next/link";
 import { formatVND } from "@/lib/format";
-import type { MinProduct } from "@/types/product";
-
+import type { Product } from "@/types/product";
+import AddToCartButton from "@/features/cart/AddToCartButton";
+import SiteFooter from "@/components/SiteFooter";
 
 // Cập nhật ProductCardProps: CHỈ CHẤP NHẬN prop 'product'
 export type ProductCardProps = {
-  product: MinProduct;
+  product: Product;
 };
 
 export default function ProductCard({ product }: ProductCardProps) {
   // Destructure tất cả các thuộc tính cần thiết từ object 'product'
-  const { title, price, brand,color, rating, slug, image, stock } = product;
+  const { title, price, brand, color, rating, slug, images, stock } = product;
 
   // Tái tạo các biến cần thiết (href, imageSrc)
-  const imageSrc = image && typeof image === 'string' ? image : "/aaa.png";
+  const imageSrc = Array.isArray(images) && images.length > 0 && typeof images[0] === 'string' ? images[0] : "/aaa.png";
   const outOfStock = (stock ?? 0) <= 0;
   // Dùng (price ?? 0) để an toàn hơn khi tính isDeal
   const isDeal = (price ?? 0) < 150000; 
@@ -50,21 +49,24 @@ export default function ProductCard({ product }: ProductCardProps) {
           {/* Xuất hiện ở phần SHOP */}
           <p className="mt-1 font-semi text-sm text-gray-700">Hãng: {product.brand}</p>
           <p className="mt-1 font-semi text-sm text-gray-700">Màu: {product.color}  &nbsp;|&nbsp; Size: {product.size}</p>
+          {stock !== undefined && (
+                            <p className="font-semi text-sm text-gray-700">
+                                Kho: <span className={outOfStock ? 'text-red-400 font-semibold' : 'text-green-500 font-semibold'}>
+                                    {outOfStock ? 'Hết hàng' : `${stock} sản phẩm`}
+                                </span>
+                            </p>
+                        )}
           <p className="mt-1 font-semi text-sm text-gray-700">Đánh giá: {rating}</p>
-
+          
           {/* Price */}
           <p className="mt-1 font-semibold">{formatVND(price)}</p>
           
           {/* Button */}
-          <button
-            disabled={outOfStock}
-            className="mt-3 w-full h-9 text-sm rounded-md border hover:bg-gray-50 disabled:opacity-40"
-            aria-disabled={outOfStock}
-          >
-            Thêm vào giỏ
-          </button>
+          <AddToCartButton product={product} disabled={outOfStock} />
         </div>
       </Link>
     </div>
   );
 }
+
+

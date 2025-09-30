@@ -6,6 +6,8 @@ import { PRODUCTS } from '@/mock/products';
 import { formatVND } from "@/lib/format"; 
 import type { Product } from "@/types/product";
 import SiteFooter from "@/components/SiteFooter";
+import AddToCartButton from "@/features/cart/AddToCartButton";
+
 
 // Ép kiểu cho PRODUCTS để TypeScript biết rõ ràng
 const ProductList = PRODUCTS as Product[];
@@ -92,13 +94,11 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
             <p className="mt-2 text-green-600 font-medium">Còn {currentStock} sản phẩm</p>
           )}
 
-          <div className="mt-6 flex gap-3">
-            <button 
-              className="h-10 px-4 rounded-md border disabled:opacity-50"
-              disabled={outOfStock}
-            >
-              Thêm vào giỏ
-            </button>
+          <div className="mt-6 flex gap-3 ">
+              <AddToCartButton  
+              product={product} 
+              disabled={product.stock <= 0} 
+              fullWidth={false} className="h-10"/>
             <button 
               className="h-10 px-4 rounded-md border bg-black text-white disabled:opacity-50"
               disabled={outOfStock}
@@ -113,7 +113,7 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
       {/* --- Có thể bạn quan tâm --- */}
 
       {relatedProducts.length > 0 && (
-        <section className="mt-6">
+        <section className="mt-2">
           <h3 className="text-2xl font-semibold mb-6">Có thể bạn quan tâm</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {relatedProducts.map((p) => {
@@ -147,9 +147,16 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
 
                     <div className="p-4">
                       <h4 className="font-semibold text-lg truncate">{p.title}</h4>
-                      <p className="mt-2 text-gray-600 text-sm">Hãng: {p.brand}</p>
+                      <p className="mt-2 text-gray-900 text-md">Hãng: {p.brand}</p>
                       <p className="mt-2 text-black-600">Màu: {p.color}&nbsp;|&nbsp; Size: {p.size}</p> 
-                      <p className="mt-2 text-black-600">Đánh giá: {p.rating}</p>
+                      {p.stock !== undefined && (
+                            <p className="mt-2 font-semi text-md text-gray-600">
+                                Kho: <span className={outOfStock ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'}>
+                                    {outOfStock ? 'Hết hàng' : `${p.stock} sản phẩm`}
+                                </span>
+                            </p>
+                        )}
+                      <p className="mt-2 text-black-700">Đánh giá: {p.rating}</p>
                       <p className="mt-2 font-bold text-gray-800">
                         {formatVND(p.price)}
                       </p>
